@@ -17,4 +17,6 @@ public interface ProductService {
     boolean deleteProduct(Integer id);
     
     boolean updateProductStatus(Integer id, String status);
+    
+    boolean updateProductHotStatus(Integer id, Boolean isHot);
 }

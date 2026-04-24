@@ -121,4 +121,21 @@ public class ProductController {
         }
         return ResponseUtil.error("更新失败");
     }
+
+    /**
+     * 更新产品爆款状态
+     * @param id 产品的唯一标识符
+     * @param hotData 包含爆款状态的请求体
+     * @return 包含成功消息或错误的响应
+     */
+    @PutMapping("/{id}/hot")
+    public Map<String, Object> updateProductHotStatus(@PathVariable Integer id, @RequestBody Map<String, Boolean> hotData) {
+        Boolean isHot = hotData.get("isHot");
+
+        boolean success = productService.updateProductHotStatus(id, isHot);
+        if (success) {
+            return ResponseUtil.success("success");
+        }
+        return ResponseUtil.error("更新失败");
+    }
 }

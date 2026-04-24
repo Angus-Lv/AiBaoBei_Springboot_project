@@ -1,12 +1,31 @@
--- 插入测试商品
-INSERT INTO product (name, category, image, price, original_price, stock, sales, status, is_seckill, create_time) VALUES 
-('爱他美白金版奶粉', 'milk', 'product1.jpg', 199.00, 299.00, 200, 1258, 'active', 1, NOW()),
-('美赞臣蓝臻奶粉', 'milk', 'product2.jpg', 268.00, 368.00, 150, 892, 'active', 0, NOW()),
-('花王妙而舒纸尿裤', 'diaper', 'product3.jpg', 89.00, 129.00, 500, 2341, 'active', 1, NOW()),
-('帮宝适一级帮纸尿裤', 'diaper', 'product4.jpg', 109.00, 159.00, 300, 1567, 'active', 0, NOW()),
-('嘉宝米粉', 'food', 'product5.jpg', 58.00, 78.00, 400, 987, 'active', 0, NOW()),
-('贝亲婴儿辅食', 'food', 'product6.jpg', 35.00, 45.00, 600, 1456, 'active', 0, NOW()),
-('费雪安抚海马', 'toy', 'product7.jpg', 128.00, 168.00, 100, 567, 'active', 1, NOW()),
-('乐高积木', 'toy', 'product8.jpg', 299.00, 399.00, 80, 423, 'active', 0, NOW()),
-('婴儿连体衣', 'clothes', 'product9.jpg', 69.00, 99.00, 250, 1890, 'active', 0, NOW()),
-('婴儿睡袋', 'clothes', 'product10.jpg', 159.00, 229.00, 120, 678, 'active', 0, NOW());
+-- 插入订单数据
+INSERT INTO `order` (order_id, member_id, member_nickname, member_phone, total_price, total_quantity, status, pay_method, pay_time, receiver_name, receiver_phone, receiver_address, remark, create_time, update_time) VALUES 
+('20260424001', 1, 'user1', '13800138001', 398.00, 2, 'completed', 'wechat', NOW(), '张三', '13800138001', '北京市朝阳区', '尽快发货', NOW(), NOW()),
+('20260424002', 2, 'user2', '13800138002', 268.00, 1, 'pending', NULL, NULL, '李四', '13800138002', '上海市浦东新区', NULL, NOW(), NOW()),
+('20260424003', 3, 'user3', '13800138003', 587.00, 3, 'shipped', 'alipay', NOW(), '王五', '13800138003', '广州市天河区', '包装好一点', NOW(), NOW()),
+('20260424004', 1, 'user1', '13800138001', 199.00, 1, 'completed', 'wechat', NOW(), '张三', '13800138001', '北京市朝阳区', NULL, NOW(), NOW()),
+('20260424005', 2, 'user2', '13800138002', 447.00, 2, 'pending', NULL, NULL, '李四', '13800138002', '上海市浦东新区', '周末送货', NOW(), NOW()),
+('20260424006', 3, 'user3', '13800138003', 128.00, 1, 'shipped', 'alipay', NOW(), '王五', '13800138003', '广州市天河区', NULL, NOW(), NOW()),
+('20260424007', 1, 'user1', '13800138001', 89.00, 1, 'completed', 'wechat', NOW(), '张三', '13800138001', '北京市朝阳区', NULL, NOW(), NOW()),
+('20260424008', 2, 'user2', '13800138002', 358.00, 2, 'pending', NULL, NULL, '李四', '13800138002', '上海市浦东新区', NULL, NOW(), NOW()),
+('20260424009', 3, 'user3', '13800138003', 299.00, 1, 'shipped', 'alipay', NOW(), '王五', '13800138003', '广州市天河区', '需要发票', NOW(), NOW()),
+('20260424010', 1, 'user1', '13800138001', 178.00, 2, 'completed', 'wechat', NOW(), '张三', '13800138001', '北京市朝阳区', NULL, NOW(), NOW());
+
+-- 插入订单商品数据
+INSERT INTO order_item (order_id, product_id, product_name, product_image, price, quantity, spec) VALUES 
+(1, 33, '经典美白奶粉', 'image1.jpg', 199.00, 1, '标准装'),
+(1, 34, '爱贝婴儿纸尿裤', 'image2.jpg', 268.00, 1, 'L码'),
+(2, 34, '爱贝婴儿纸尿裤', 'image2.jpg', 268.00, 1, 'L码'),
+(3, 33, '经典美白奶粉', 'image1.jpg', 199.00, 1, '标准装'),
+(3, 34, '爱贝婴儿纸尿裤', 'image2.jpg', 268.00, 1, 'L码'),
+(3, 35, '婴儿连体衣', 'image3.jpg', 120.00, 1, '6-12个月'),
+(4, 33, '经典美白奶粉', 'image1.jpg', 199.00, 1, '标准装'),
+(5, 34, '爱贝婴儿纸尿裤', 'image2.jpg', 268.00, 1, 'L码'),
+(5, 35, '婴儿连体衣', 'image3.jpg', 120.00, 1, '6-12个月'),
+(6, 36, '婴儿奶瓶', 'image4.jpg', 128.00, 1, '240ml'),
+(7, 37, '婴儿洗护套装', 'image5.jpg', 89.00, 1, '套装'),
+(8, 38, '婴儿推车', 'image6.jpg', 299.00, 1, '折叠款'),
+(8, 39, '婴儿床', 'image7.jpg', 59.00, 1, '便携式'),
+(9, 40, '高端床垫', 'image8.jpg', 299.00, 1, '1.2m'),
+(10, 41, '婴儿玩具', 'image9.jpg', 89.00, 1, '益智类'),
+(10, 42, '营养米粉', 'image10.jpg', 89.00, 1, '高铁锌钙');

@@ -149,4 +149,12 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         product.setStatus(status);
         return this.updateById(product);
     }
+
+    @Override
+    public boolean updateProductHotStatus(Integer id, Boolean isHot) {
+        Product product = new Product();
+        product.setId(id);
+        product.setIsHot(isHot);
+        return this.updateById(product);
+    }
 }

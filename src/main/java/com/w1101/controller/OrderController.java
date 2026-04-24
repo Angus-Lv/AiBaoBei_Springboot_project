@@ -5,6 +5,7 @@ import com.w1101.entity.Order;
 import com.w1101.service.OrderService;
 import com.w1101.utils.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -42,9 +43,19 @@ public class OrderController {
     }
 
     @PutMapping("/{id}/status")
-    public Map<String, Object> updateOrderStatus(@PathVariable Integer id, @RequestBody Map<String, Object> statusData) {
-        String status = (String) statusData.get("status");
-        String remark = (String) statusData.get("remark");
+    public Map<String, Object> updateOrderStatus(@PathVariable Integer id,
+                                                 @RequestBody(required = false) Map<String, Object> statusData,
+                                                 @RequestParam(value = "status", required = false) String statusParam,
+                                                 @RequestParam(value = "remark", required = false) String remarkParam) {
+        String status = null;
+        String remark = null;
+        if (statusData != null) {
+            status = (String) statusData.get("status");
+            remark = (String) statusData.get("remark");
+        }
+        // fallback to query params if provided (frontend may send as form or query)
+        if (status == null) status = statusParam;
+        if (remark == null) remark = remarkParam;
 
         if (status == null) {
             return ResponseUtil.error("状态参数不能为空");
@@ -62,8 +73,15 @@ public class OrderController {
     }
 
     @PutMapping("/{id}/cancel")
-    public Map<String, Object> cancelOrder(@PathVariable Integer id, @RequestBody Map<String, String> cancelData) {
-        String remark = cancelData.get("remark");
+    public Map<String, Object> cancelOrder(@PathVariable Integer id,
+                                           @RequestBody(required = false) Map<String, String> cancelData,
+                                           @RequestParam(value = "remark", required = false) String remarkParam) {
+        String remark = null;
+        if (cancelData != null) {
+            remark = cancelData.get("remark");
+        }
+        if (remark == null) remark = remarkParam;
+
         boolean success = orderService.cancelOrder(id, remark);
         if (success) {
             Map<String, Object> data = new HashMap<>();
@@ -76,8 +94,15 @@ public class OrderController {
     }
 
     @PutMapping("/{id}/complete")
-    public Map<String, Object> completeOrder(@PathVariable Integer id, @RequestBody Map<String, String> completeData) {
-        String remark = completeData.get("remark");
+    public Map<String, Object> completeOrder(@PathVariable Integer id,
+                                             @RequestBody(required = false) Map<String, String> completeData,
+                                             @RequestParam(value = "remark", required = false) String remarkParam) {
+        String remark = null;
+        if (completeData != null) {
+            remark = completeData.get("remark");
+        }
+        if (remark == null) remark = remarkParam;
+
         boolean success = orderService.completeOrder(id, remark);
         if (success) {
             Map<String, Object> data = new HashMap<>();
@@ -90,8 +115,15 @@ public class OrderController {
     }
 
     @PutMapping("/{id}/ship")
-    public Map<String, Object> shipOrder(@PathVariable Integer id, @RequestBody Map<String, String> shipData) {
-        String remark = shipData.get("remark");
+    public Map<String, Object> shipOrder(@PathVariable Integer id,
+                                         @RequestBody(required = false) Map<String, String> shipData,
+                                         @RequestParam(value = "remark", required = false) String remarkParam) {
+        String remark = null;
+        if (shipData != null) {
+            remark = shipData.get("remark");
+        }
+        if (remark == null) remark = remarkParam;
+
         boolean success = orderService.shipOrder(id, remark);
         if (success) {
             Map<String, Object> data = new HashMap<>();
@@ -102,4 +134,15 @@ public class OrderController {
         }
         return ResponseUtil.error("确认自提失败");
     }
+
+    /**
+     * 捕获空请求体或不可读JSON导致的异常，返回一个友好的错误而非 400 原始异常。
+     * 这里我们将其转换为一个可读的错误响应（前端可以在不发送 body 的情况下用 query param）。
+     */
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public Map<String, Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+        // 记录日志（这里不引入 logger，交由框架日志记录）
+        return ResponseUtil.error("请求体不可读或为空，请使用 query 参数或发送正确的 JSON 请求体");
+    }
+
 }

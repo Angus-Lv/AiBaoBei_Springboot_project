@@ -268,7 +268,7 @@ CREATE TABLE IF NOT EXISTS booking (
     baby_name VARCHAR(50),
     baby_age VARCHAR(20),
     date DATE NOT NULL,
-    time VARCHAR(10) NOT NULL,
+    time VARCHAR(15) NOT NULL,
     status VARCHAR(20) NOT NULL DEFAULT 'pending',
     remark VARCHAR(255),
     create_time DATETIME DEFAULT CURRENT_TIMESTAMP,

@@ -45,4 +45,24 @@ public class StatisticsController {
         List<Map<String, Object>> distribution = statisticsService.getOrderStatusDistribution(timeRange, startDate, endDate);
         return ResponseUtil.success(distribution);
     }
+    
+    @GetMapping("/dashboard/statistics")
+    public Map<String, Object> getDashboardStatistics() {
+        Map<String, Object> statistics = statisticsService.getDashboardStatistics();
+        return ResponseUtil.success(statistics);
+    }
+    
+    @GetMapping("/statistics/sales-trend")
+    public Map<String, Object> getSalesTrend(
+            @RequestParam(required = false, defaultValue = "7d") String timeRange) {
+        Map<String, Object> trend = statisticsService.getSalesTrend(timeRange);
+        return ResponseUtil.success(trend);
+    }
+    
+    @GetMapping("/statistics/order-status")
+    public Map<String, Object> getOrderStatusDistribution(
+            @RequestParam(required = false, defaultValue = "7d") String timeRange) {
+        List<Map<String, Object>> distribution = statisticsService.getOrderStatusDistribution(timeRange, null, null);
+        return ResponseUtil.success(distribution);
+    }
 }

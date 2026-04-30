@@ -10,4 +10,8 @@ public interface StatisticsService {
     Map<String, Object> getOrderStatistics(String timeRange, String startDate, String endDate);
     
     List<Map<String, Object>> getOrderStatusDistribution(String timeRange, String startDate, String endDate);
+    
+    Map<String, Object> getDashboardStatistics();
+    
+    Map<String, Object> getSalesTrend(String timeRange);
 }

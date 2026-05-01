@@ -20,6 +20,7 @@ public class ServiceItem {
     private String description;
     private Integer duration;
     private String status;
+    private String icon;
     
     @TableField("create_time")
     private Date createTime;

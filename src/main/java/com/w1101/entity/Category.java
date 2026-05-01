@@ -19,6 +19,8 @@ public class Category {
     
     private String value;
     
+    private String icon;
+    
     private Integer sort;
     
     private String status;

@@ -42,6 +42,10 @@ public class ResponseUtil {
         return response;
     }
 
+    public static Map<String, Object> fail(String message) {
+        return error(message);
+    }
+
     public static Map<String, Object> unauthorized() {
         Map<String, Object> response = new HashMap<>();
         response.put("code", 401);

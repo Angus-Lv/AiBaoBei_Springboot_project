@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ public class RechargeRecordServiceImpl extends ServiceImpl<RechargeRecordMapper,
 
         // 会员ID筛选
         if (memberId != null) {
-            wrapper.eq(RechargeRecord::getMemberId, memberId);
+            wrapper.eq(RechargeRecord::getUserId, memberId);
         }
 
         // 状态筛选
@@ -37,15 +38,15 @@ public class RechargeRecordServiceImpl extends ServiceImpl<RechargeRecordMapper,
         // 日期范围筛选
         if (StringUtils.isNotBlank(startDate)) {
             LocalDateTime start = LocalDateTime.parse(startDate + " 00:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            wrapper.ge(RechargeRecord::getCreateTime, start);
+            wrapper.ge(RechargeRecord::getCreatedAt, start);
         }
         if (StringUtils.isNotBlank(endDate)) {
             LocalDateTime end = LocalDateTime.parse(endDate + " 23:59:59", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            wrapper.le(RechargeRecord::getCreateTime, end);
+            wrapper.le(RechargeRecord::getCreatedAt, end);
         }
 
         // 按创建时间倒序
-        wrapper.orderByDesc(RechargeRecord::getCreateTime);
+        wrapper.orderByDesc(RechargeRecord::getCreatedAt);
 
         return this.page(pageInfo, wrapper);
     }
@@ -75,7 +76,7 @@ public class RechargeRecordServiceImpl extends ServiceImpl<RechargeRecordMapper,
 
         // 用户ID筛选
         if (userId != null) {
-            wrapper.eq(RechargeRecord::getMemberId, userId);
+            wrapper.eq(RechargeRecord::getUserId, userId);
         }
 
         // 状态筛选
@@ -84,7 +85,7 @@ public class RechargeRecordServiceImpl extends ServiceImpl<RechargeRecordMapper,
         }
 
         // 按创建时间倒序
-        wrapper.orderByDesc(RechargeRecord::getCreateTime);
+        wrapper.orderByDesc(RechargeRecord::getCreatedAt);
 
         return this.page(pageInfo, wrapper);
     }
@@ -105,10 +106,41 @@ public class RechargeRecordServiceImpl extends ServiceImpl<RechargeRecordMapper,
     public Map<String, Object> getRechargeStats() {
         Map<String, Object> stats = new HashMap<>();
 
-        // 这里需要根据实际情况实现统计逻辑
-        // 暂时返回模拟数据
-        stats.put("totalRecharge", 50000.00);
-        stats.put("totalUsers", 100);
+        // 统计总充值金额（只统计已完成状态的充值）
+        LambdaQueryWrapper<RechargeRecord> completedWrapper = new LambdaQueryWrapper<>();
+        completedWrapper.eq(RechargeRecord::getStatus, "completed");
+        completedWrapper.select(RechargeRecord::getAmount);
+        completedWrapper.select(RechargeRecord::getBonus);
+        java.util.List<RechargeRecord> records = this.list(completedWrapper);
+
+        BigDecimal totalRecharge = BigDecimal.ZERO;
+        BigDecimal totalBonus = BigDecimal.ZERO;
+        for (RechargeRecord record : records) {
+            if (record.getAmount() != null) {
+                totalRecharge = totalRecharge.add(record.getAmount());
+            }
+            if (record.getBonus() != null) {
+                totalBonus = totalBonus.add(record.getBonus());
+            }
+        }
+
+        // 统计充值用户数
+        LambdaQueryWrapper<RechargeRecord> userWrapper = new LambdaQueryWrapper<>();
+        userWrapper.eq(RechargeRecord::getStatus, "completed");
+        userWrapper.select(RechargeRecord::getUserId);
+        userWrapper.groupBy(RechargeRecord::getUserId);
+        long totalUsers = this.count(userWrapper);
+
+        // 统计充值笔数
+        LambdaQueryWrapper<RechargeRecord> countWrapper = new LambdaQueryWrapper<>();
+        countWrapper.eq(RechargeRecord::getStatus, "completed");
+        long rechargeCount = this.count(countWrapper);
+
+        stats.put("totalRecharge", totalRecharge);
+        stats.put("totalBonus", totalBonus);
+        stats.put("totalAmount", totalRecharge.add(totalBonus));
+        stats.put("totalUsers", totalUsers);
+        stats.put("rechargeCount", rechargeCount);
 
         return stats;
     }

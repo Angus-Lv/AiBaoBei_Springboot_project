@@ -5,29 +5,18 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
-@TableName("recharge_records")
-public class RechargeRecord {
+@TableName("favorites")
+public class Favorite {
 
     @TableId(type = IdType.AUTO)
     private Long id;
 
     private Long userId;
 
-    private Long tierId;
-
-    private BigDecimal amount;
-
-    private BigDecimal bonus;
-
-    private String transactionNo;
-
-    private String status;
+    private Long productId;
 
     private LocalDateTime createdAt;
-
-    private LocalDateTime completeTime;
 }

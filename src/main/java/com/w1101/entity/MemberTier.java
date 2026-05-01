@@ -9,25 +9,25 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
-@TableName("recharge_records")
-public class RechargeRecord {
+@TableName("member_tiers")
+public class MemberTier {
 
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    private Long userId;
-
-    private Long tierId;
+    private String name;
 
     private BigDecimal amount;
 
     private BigDecimal bonus;
 
-    private String transactionNo;
+    private String vipLevel;
 
-    private String status;
+    private Integer pointsBonus;
+
+    private Integer sortOrder;
 
     private LocalDateTime createdAt;
 
-    private LocalDateTime completeTime;
+    private LocalDateTime updatedAt;
 }
